@@ -1,4 +1,4 @@
-# IceForest
+# Tribe - Genealogy Tree Maker
 
 ## Project setup
 ```
