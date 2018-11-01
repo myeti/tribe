@@ -1,10 +1,12 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Home from './views/Home.vue';
+import Vue from 'vue'
+import Router from 'vue-router'
+import Home from './views/Home.vue'
+import Tree from './views/Tree.vue'
+import Login from './views/Login.vue'
 
-Vue.use(Router);
+Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -12,14 +14,33 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      path: '/:tree',
+      name: 'tree',
+      component: Tree,
+      meta: {
+        requiresAuth: true
+      }
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    }
   ],
-});
+})
+
+// auth guard
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record => record.meta.requiresAuth)) {
+    if(Vue.api.user) next()
+    else next({ name: 'login' })
+  }
+  else next()
+})
+
+export default router

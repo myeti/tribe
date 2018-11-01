@@ -1,29 +1,111 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+
+    <nav>
+      <router-link to="/" class="link">tribe</router-link>
+      <transition name="fade-right">
+        <span v-if="selectedTree.slug">
+          <i>&rsaquo;</i>{{ selectedTree.name }}
+        </span>
+      </transition>
+    </nav>
+
+    <transition name="fade">
+      <router-view/>
+    </transition>
+
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  data: () => ({
+    title: document.title
+  }),
+  computed: {
+    ...mapGetters([
+      'selectedTree'
+    ])
+  },
+  watch: {
+    selectedTree(tree) {
+      document.title = tree.name ? `${this.title} \u203a ${tree.name}` : this.title
     }
   }
 }
+</script>
+
+
+<style lang="sass">
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600')
+@import './styles/vars'
+
+#app
+  position: fixed
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  transform: translateZ(0)
+  font-family: Montserrat, sans-serif
+  background: $color-bg
+  font-size: $size-font
+  color: $color-font
+
+  // common elements
+  button, input, select, textarea
+    font-size: $size-font
+    color: $color-font
+
+  .link
+    &, &:active, &:focus, &:visited
+      color: $color-font-light
+      text-decoration: none
+      cursor: pointer
+      border-bottom: 1px solid transparent
+      &:hover
+          border-bottom-color: $color-font-light
+
+  // navigation
+  nav
+    z-index: 80
+    position: absolute
+    top: 30px
+    left: 30px
+    font-weight: 600
+    a, span
+      display: inline-block
+      text-transform: uppercase
+      letter-spacing: 2px
+    i
+      font-style: normal
+      font-size: 21px
+      line-height: $size-font
+      margin: 0 10px
+
+  // main frame
+  .frame
+    position: absolute
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+
+  // animations
+  .fade-enter-active,
+  .fade-leave-active
+    transition: opacity 400ms
+  .fade-enter,
+  .fade-leave-to
+    opacity: 0
+
+  .fade-right-enter-active,
+  .fade-right-leave-active
+    transition: all 400ms
+  .fade-right-enter,
+  .fade-right-leave-to
+    opacity: 0
+    transform: translateX(-10%)
 </style>
